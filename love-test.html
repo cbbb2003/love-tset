@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>测测他有多爱我 💖</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --pink-1: #ffe4ef;
+    --pink-2: #ffb6d2;
+    --pink-3: #ff7fb1;
+    --purple-1: #efe6ff;
+    --purple-2: #cdb4f5;
+    --purple-3: #9b6fd6;
+    --card-bg: rgba(255, 255, 255, 0.92);
+    --text-main: #5b3a52;
+    --text-sub: #9b7d92;
+    --shadow: 0 12px 32px rgba(199, 125, 168, 0.22);
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    color: var(--text-main);
+    background: linear-gradient(160deg, #fff0f6 0%, #fbe7ff 45%, #f0e6ff 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 16px;
+    overflow-x: hidden;
+  }
+
+  /* 背景装饰小圆点 */
+  .bg-deco {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .bg-deco span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.35;
+    filter: blur(1px);
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  /* 卡片 */
+  .card {
+    background: var(--card-bg);
+    backdrop-filter: blur(6px);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 30px 24px;
+    min-height: 460px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 页面切换动画 */
+  .page {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    animation: pageIn 0.45s ease both;
+  }
+  .page.active {
+    display: flex;
+  }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ---------- 首页 ---------- */
+  .home {
+    text-align: center;
+    justify-content: center;
+  }
+  .home h1 {
+    font-size: 34px;
+    line-height: 1.35;
+    letter-spacing: 1px;
+    color: var(--pink-3);
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 0 #fff;
+  }
+  .home .big-emoji {
+    font-size: 70px;
+    line-height: 1;
+    margin: 6px 0 18px;
+    animation: float 2.6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .home p.lead {
+    font-size: 16px;
+    color: var(--text-sub);
+    line-height: 1.8;
+    margin-bottom: 26px;
+  }
+  .home .tags {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .home .tags span {
+    background: linear-gradient(135deg, #fff0f6, #f6ecff);
+    color: var(--purple-3);
+    font-size: 12.5px;
+    padding: 7px 14px;
+    border-radius: 30px;
+  }
+
+  /* ---------- 通用按钮 ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 16px 22px;
+    border-radius: 50px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--pink-3), var(--purple-3));
+    box-shadow: 0 10px 22px rgba(199, 96, 158, 0.38);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    user-select: none;
+  }
+  .btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 12px rgba(199, 96, 158, 0.32);
+    filter: brightness(0.96);
+  }
+  .btn.ghost {
+    background: linear-gradient(135deg, #fff, #fff0f6);
+    color: var(--pink-3);
+    box-shadow: 0 6px 16px rgba(199, 96, 158, 0.18);
+    border: 1.5px solid var(--pink-2);
+  }
+
+  /* ---------- 答题页 ---------- */
+  .quiz-head {
+    margin-bottom: 20px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+  }
+  .progress-meta em {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--purple-3);
+  }
+  .progress-track {
+    height: 12px;
+    border-radius: 20px;
+    background: rgba(199, 125, 168, 0.16);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--pink-3), var(--purple-3));
+    transition: width 0.45s ease;
+  }
+
+  .question {
+    font-size: 22px;
+    line-height: 1.5;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 14px 0 22px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .option {
+    width: 100%;
+    text-align: left;
+    border: 2px solid #ffe4ef;
+    border-radius: 18px;
+    background: #fff;
+    padding: 15px 16px;
+    font-family: inherit;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+  }
+  .option:hover { border-color: var(--pink-2); }
+  .option:active {
+    transform: scale(0.96);
+    background: #fff4fa;
+  }
+  .option .opt-ico {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .option .opt-text { flex: 1; }
+  .option.selected {
+    border-color: var(--purple-3);
+    background: linear-gradient(135deg, #fff0f6, #f6ecff);
+    box-shadow: 0 6px 16px rgba(199, 96, 158, 0.22);
+  }
+
+  /* ---------- 结果页 ---------- */
+  .result { text-align: center; justify-content: center; }
+  .result .heart-wrap { position: relative; margin-bottom: 10px; }
+  .result .big-heart {
+    font-size: 74px;
+    line-height: 1;
+    display: inline-block;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  .result .grade-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--pink-3);
+    margin: 6px 0 8px;
+  }
+  .score-wrap {
+    margin: 6px auto 16px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff0f6, #f0e6ff);
+    box-shadow: inset 0 0 0 10px rgba(255,255,255,0.6), 0 10px 26px rgba(199,96,158,0.22);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .score-num {
+    font-size: 46px;
+    font-weight: 900;
+    color: var(--purple-3);
+    line-height: 1;
+  }
+  .score-label { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+  .result .desc {
+    font-size: 15.5px;
+    color: var(--text-main);
+    line-height: 1.85;
+    background: #fff6fb;
+    border-radius: 16px;
+    padding: 16px;
+    margin: 4px 0 14px;
+    text-align: left;
+  }
+  .result .advice {
+    font-size: 14.5px;
+    color: var(--text-sub);
+    line-height: 1.75;
+    text-align: left;
+    background: #f6f2ff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .result .advice b { color: var(--purple-3); }
+
+  /* 底部提示 */
+  .foot-note {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-sub);
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  /* 再次进入动画 */
+  .fade-in { animation: pageIn 0.45s ease both; }
+</style>
+</head>
+<body>
+  <div class="bg-deco" id="bgDeco"></div>
+
+  <div class="app">
+    <!-- 首页 -->
+    <div class="card">
+      <div class="page home active" id="homePage">
+        <h1>测测他有多爱我 💖</h1>
+        <div class="big-emoji">💕</div>
+        <p class="lead">
+          8 道恋爱小情景，<br>看看他把你的爱放在几分位置～<br>全程好玩不严肃，别太认真哦！
+        </p>
+        <div class="tags">
+          <span>🎀 纯娱乐</span>
+          <span>💌 8 道题</span>
+          <span>⏱ 约 1 分钟</span>
+        </div>
+        <button class="btn" id="startBtn">开始测试 💘</button>
+      </div>
+
+      <!-- 答题页 -->
+      <div class="page quiz" id="quizPage">
+        <div class="quiz-head">
+          <div class="progress-meta">
+            <span>题目 <em id="qNum">1</em> / 8</span>
+            <span>进度 <em id="qPct">0%</em></span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+        <div class="question" id="questionText"></div>
+        <div class="options" id="optionsBox"></div>
+      </div>
+
+      <!-- 结果页 -->
+      <div class="page result" id="resultPage">
+        <div class="heart-wrap"><span class="big-heart" id="heartEmoji">💖</span></div>
+        <div class="grade-name" id="gradeName"></div>
+        <div class="score-wrap">
+          <div class="score-num" id="scoreNum">0</div>
+          <div class="score-label">爱情指数 / 100</div>
+        </div>
+        <div class="desc" id="descText"></div>
+        <div class="advice" id="adviceText"></div>
+        <button class="btn ghost" id="restartBtn">重新测试 🔄</button>
+      </div>
+    </div>
+
+    <p class="foot-note">本测试仅为趣味娱乐，仅供参考，不代表真实客观结论。<br>所有数据均在本地浏览器计算，不会上传任何信息。</p>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+  // 生成背景装饰圆点
+  (function makeDeco() {
+    var wrap = document.getElementById("bgDeco");
+    var colors = ["#ffb6d2", "#cdb4f5", "#ffd6e8", "#e0c6ff"];
+    for (var i = 0; i < 18; i++) {
+      var s = document.createElement("span");
+      var size = 24 + Math.random() * 60;
+      s.style.width = size + "px";
+      s.style.height = size + "px";
+      s.style.left = (Math.random() * 100) + "%";
+      s.style.top = (Math.random() * 100) + "%";
+      s.style.background = colors[i % colors.length];
+      wrap.appendChild(s);
+    }
+  })();
+
+  // 题目与选项（每题为 4 个选项，分数代表"他爱你的程度"，4/8/14/20）
+  var QUESTIONS = [
+    { text: "🥺 身体不舒服的那天，他会？", options: [
+      { text: "丢下一句“多喝热水”就打游戏去了", score: 4 },
+      { text: "问候了一下，然后一整天没消息", score: 8 },
+      { text: "买好药送上门，陪你看病照顾你", score: 14 },
+      { text: "放下手头工作第一时间赶到，整晚守着你", score: 20 }
+    ]},
+    { text: "🌧️ 你心情不好想倾诉时，他正在？", options: [
+      { text: "敷衍一句“别想太多”", score: 4 },
+      { text: "一边回你消息一边打游戏", score: 8 },
+      { text: "放下手机认真听完，还哄你开心", score: 14 },
+      { text: "主动察觉到你的失落，温柔开导陪着你", score: 20 }
+    ]},
+    { text: "💬 你们闹别扭之后，通常是？", options: [
+      { text: "每次都是你先低头哄他", score: 4 },
+      { text: "冷战好几天，他才勉强道歉", score: 8 },
+      { text: "他会主动找你沟通、把话说开", score: 14 },
+      { text: "再生气也不忍心看你难过，马上和好", score: 20 }
+    ]},
+    { text: "📱 翻开他的手机，关于你的痕迹是？", options: [
+      { text: "很少存你的照片，备注还是他的全名", score: 4 },
+      { text: "偶尔有几张合照，平时想不起来", score: 8 },
+      { text: "有专门的相册，还给你设了亲密昵称", score: 14 },
+      { text: "置顶你、设专属昵称，逢人就秀", score: 20 }
+    ]},
+    { text: "🎁 你随口提过的心愿，他会？", options: [
+      { text: "基本不会放在心上", score: 4 },
+      { text: "偶尔想起来，问两句就没了下文", score: 8 },
+      { text: "偷偷记下来，找机会给你惊喜", score: 14 },
+      { text: "默默记住每个细节，一样一样实现", score: 20 }
+    ]},
+    { text: "🚨 你遇到麻烦向他求助时，他的反应是？", options: [
+      { text: "觉得你自己能解决", score: 4 },
+      { text: "嘴上答应，却迟迟没动静", score: 8 },
+      { text: "立刻帮你出主意、想办法解决", score: 14 },
+      { text: "永远第一时间出现，坚定地为你撑腰", score: 20 }
+    ]},
+    { text: "💑 他有多愿意融入你的生活？", options: [
+      { text: "从不愿意参与你的事", score: 4 },
+      { text: "只是听说过你的朋友和家人", score: 8 },
+      { text: "会主动认识你的朋友、去见你的家人", score: 14 },
+      { text: "把你介绍给所有人，把你当成全部", score: 20 }
+    ]},
+    { text: "🌸 他表达爱的方式，更像哪种？", options: [
+      { text: "几乎不表达，全靠你自己猜", score: 4 },
+      { text: "只在纪念日才会仪式感一下", score: 8 },
+      { text: "平时会说“我爱你”、惦记着你", score: 14 },
+      { text: "每天用行动和言语告诉你“你很重要”", score: 20 }
+    ]}
+  ];
+
+  // 结果等级配置：按 0-100 分划分
+  var LEVELS = [
+    { max: 25, name: "缘分还浅 🌱", heart: "🌱",
+      desc: "他目前对你的付出还比较有限，保持观望，别急着全情投入。看清彼此节奏再往前走，是对自己最好的保护。",
+      advice: "试试把自己的真实想法多表达出来，观察他在意你的程度，再决定要不要继续付出。" },
+    { max: 50, name: "好感萌芽 🎈", heart: "🎈",
+      desc: "他心里其实有你的位置，只是还不懂得怎么更好地照顾你。感情正在升温，只是还需要一点时间和耐心。",
+      advice: "适度表达你的感受，也给他点空间。别急着要答案，让感情自然生长。" },
+    { max: 75, name: "渐入佳境 💞", heart: "💞",
+      desc: "他很在乎你，愿意为你花心思、花时间。你们的感情在线，只要多沟通、多陪伴，甜蜜度还能更高。",
+      advice: "一起多制造点属于你们的小回忆，也别忘了表达你有多喜欢他这份用心。" },
+    { max: 100, name: "把你放心尖上 💖", heart: "💖",
+      desc: "他把你的每件小事都放在心上，爱你爱得又温柔又坚定，是被狠狠偏爱的那种幸福！",
+      advice: "好好享受这份偏爱，也别忘了用同样的热情回应他，让爱一直住得舒服。" }
+  ];
+
+  var currentIndex = 0;
+  var totalScore = 0;
+
+  var homePage = document.getElementById("homePage");
+  var quizPage = document.getElementById("quizPage");
+  var resultPage = document.getElementById("resultPage");
+
+  function show(page) {
+    [homePage, quizPage, resultPage].forEach(function (p) { p.classList.remove("active"); });
+    page.classList.add("active");
+  }
+
+  // 渲染当前题目
+  function renderQuestion() {
+    var q = QUESTIONS[currentIndex];
+    document.getElementById("qNum").textContent = currentIndex + 1;
+    var pct = Math.round((currentIndex) / QUESTIONS.length * 100);
+    document.getElementById("qPct").textContent = pct + "%";
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("questionText").textContent = q.text;
+
+    var box = document.getElementById("optionsBox");
+    box.innerHTML = "";
+    q.options.forEach(function (opt, i) {
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.dataset.score = opt.score;
+      btn.innerHTML = '<span class="opt-ico">' + emojiFor(i) + '</span><span class="opt-text">' + opt.text + '</span>';
+      btn.addEventListener("click", function () { pick(btn, opt.score); });
+      box.appendChild(btn);
+    });
+  }
+
+  function emojiFor(i) {
+    var set = ["🔸", "🌸", "🌷", "💘"];
+    return set[i % set.length];
+  }
+
+  // 选择答案 -> 短暂动画后进入下一题
+  function pick(btn, score) {
+    // 标记选中
+    var all = document.querySelectorAll(".option");
+    all.forEach(function (b) { b.classList.remove("selected"); });
+    btn.classList.add("selected");
+
+    // 禁止重复点击
+    all.forEach(function (b) { b.style.pointerEvents = "none"; });
+
+    setTimeout(function () {
+      totalScore += score;
+      currentIndex++;
+
+      if (currentIndex < QUESTIONS.length) {
+        renderQuestion();
+        // 恢复可点击
+        document.querySelectorAll(".option").forEach(function (b) { b.style.pointerEvents = "auto"; });
+      } else {
+        showResult();
+      }
+    }, 260);
+  }
+
+  function showResult() {
+    var maxScore = QUESTIONS.length * 20; // 每道题最高 20 分
+    var percent = Math.round(totalScore / maxScore * 100);
+
+    var level = LEVELS[LEVELS.length - 1];
+    for (var i = 0; i < LEVELS.length; i++) {
+      if (percent <= LEVELS[i].max) { level = LEVELS[i]; break; }
+    }
+
+    document.getElementById("gradeName").textContent = level.name;
+    document.getElementById("heartEmoji").textContent = level.heart;
+    document.getElementById("descText").textContent = level.desc;
+    document.getElementById("adviceText").innerHTML = "<b>💡 小建议：</b>" + level.advice;
+
+    show(resultPage);
+
+    // 分数滚动动画
+    var numEl = document.getElementById("scoreNum");
+    numEl.textContent = 0;
+    animateNumber(numEl, percent, 1100);
+  }
+
+  function animateNumber(el, target, duration) {
+    var start = performance.now();
+    function step(now) {
+      var t = Math.min((now - start) / duration, 1);
+      // easeOutCubic 缓动
+      var eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(target * eased);
+      if (t < 1) { requestAnimationFrame(step); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // 开始按钮
+  document.getElementById("startBtn").addEventListener("click", function () {
+    currentIndex = 0;
+    totalScore = 0;
+    renderQuestion();
+    show(quizPage);
+  });
+
+  // 重新测试按钮
+  document.getElementById("restartBtn").addEventListener("click", function () {
+    currentIndex = 0;
+    totalScore = 0;
+    renderQuestion();
+    show(quizPage);
+  });
+})();
+</script>
+</body>
+</html>
